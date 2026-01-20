@@ -1,4 +1,5 @@
 import time
-import console
-print("hola")
-time.sleep(1)
+from rich.console import Console
+
+console = Console()
+

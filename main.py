@@ -1,14 +1,23 @@
-import os
-os.system('color') # Esta línea "despierta" los colores en la terminal de Windows
+import pygame, time
+from parsear import parsear_lrc
+from rich import print 
+pygame.mixer.init()
+pygame.mixer.music.load("canciones\Ozuna x J Balvin x Chencho Corleone - Una Locura (Video Oficial) - Ozuna.mp3")
+pygame.mixer.music.play()
+pygame.mixer.music.set_pos(114)
 
 
-# Definimos los "pinceles"
-ROJO = "\033[31m"
-VERDE = "\033[32m"
-AZUL = "\033[34m"
-RESET = "\033[0m"
 
-# Ahora los usamos de forma fácil
-print(f"{ROJO}¡Cuidado! Algo salió mal.{RESET}, jajajajaja {AZUL} O no...")
-print(f"{AZUL}Procesando datos...{RESET}")
-print(f"{VERDE}¡Éxito total!{RESET}")
+letra = parsear_lrc("letras\Ozuna - Una Locura.es.lrc")
+parte = letra[0]
+##print(parte.values())
+num_elementos = len(letra)
+
+lista = {'tiempo': 209.3, 'texto': 'by RentAnAdviser.com'}
+
+
+for elemento in letra:
+    print(elemento)
+    for tiempo in elemento.values():
+        print(tiempo)
+        #print(f"minuto: {tiempo / 60}")
