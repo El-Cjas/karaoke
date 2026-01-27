@@ -8,7 +8,7 @@ pygame.mixer.music.play()
 
 delay = 0
 tiempo_inicio = time.time()
-tiempo_offset = 20 
+tiempo_offset = 20 # Cuántos segundos hemos adelantado/atrasado manualmente
 pygame.mixer.music.set_pos(tiempo_offset)
 
 letra = parsear_lrc("letras/ana gabriel - el cigarrillo.lrc")
