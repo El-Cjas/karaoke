@@ -3,7 +3,7 @@ from parsear import parsear_lrc
 from rich import print 
 
 pygame.mixer.init()
-pygame.mixer.music.load("canciones/Maluma - Hawái (Official Video) - MalumaVEVO.mp3")
+pygame.mixer.music.load("canciones\Ana Gabriel   El Cigarrillo Letra - javier hernan panta seminario.mp3")
 pygame.mixer.music.play()
 
 delay = 0
@@ -11,7 +11,7 @@ tiempo_inicio = time.time()
 tiempo_offset = 20 
 pygame.mixer.music.set_pos(tiempo_offset)
 
-letra = parsear_lrc("letras/Maluma-Hawai-(Official-Video) (1).lrc")
+letra = parsear_lrc("letras/ana gabriel - el cigarrillo.lrc")
 
 # --- VARIABLES DE CONTROL ---
 indice_anterior = -1 
