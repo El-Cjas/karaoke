@@ -1,60 +1,64 @@
-import pygame, time, os
+import pygame, time, os, sys, random
 from parsear import parsear_lrc
-from rich import print 
+from rich.console import Console
 
+console = Console()
+
+# --- CONFIGURACIÓN ---
 pygame.mixer.init()
-pygame.mixer.music.load("canciones\Ana Gabriel   El Cigarrillo Letra - javier hernan panta seminario.mp3")
+pygame.mixer.music.load("canciones/Ana Gabriel - El Cigarrillo.mp3")
 pygame.mixer.music.play()
 
-delay = 0
-tiempo_inicio = time.time()
-tiempo_offset = 20 # Cuántos segundos hemos adelantado/atrasado manualmente
+tiempo_offset = 20 
 pygame.mixer.music.set_pos(tiempo_offset)
+tiempo_inicio = time.time()
 
 letra = parsear_lrc("letras/ana gabriel - el cigarrillo.lrc")
+colores_vivos = ["cyan", "bright_yellow", "bright_magenta", "spring_green3", "turquoise2"]
 
-# --- VARIABLES DE CONTROL ---
-indice_anterior = -1 
-os.system("cls")
-
-def obtener_tiempo_actual():
-    return (time.time() - tiempo_inicio) + tiempo_offset
-
-running = True
-while running:
-    tiempo_actual = obtener_tiempo_actual()
+def imprimir_centrado_con_efecto(texto):
+    """Limpia y muestra solo la frase actual con efecto de escritura"""
+    color = random.choice(colores_vivos)
+    os.system("cls" if os.name == "nt" else "clear")
     
-    # 1. ENCONTRAR EL ÍNDICE DE LA FRASE ACTUAL
-    indice_actual = 0
-    for i, elemento in enumerate(letra):
-        if tiempo_actual >= (elemento["tiempo"] - delay):
-            indice_actual = i
-        else:
-            break
+    # Añadimos un poco de espacio superior para centrar verticalmente
+    print("\n" * 1)
+    
+    frase_completa = f"{texto}"
+    
+    # Efecto de máquina de escribir
+    for i in range(len(frase_completa) + 1):
+        # Regresar al inicio de la línea para actualizar la palabra
+        sys.stdout.write("\r")
+        # Generar espacios para centrar horizontalmente (ajuste según ancho consola)
+        padding = " " * 10 
+        console.print(f"{padding}[bold {color}]{frase_completa[:i]}[/bold {color}]", end="")
+        sys.stdout.flush()
+        time.sleep(0.06)
+    print("\n" * 2)
 
-    # 2. SOLO ACTUALIZAR SI EL ÍNDICE CAMBIÓ
-    if indice_actual != indice_anterior:
-        os.system("cls")
-        print(f"[yellow]Tiempo: {tiempo_actual:.2f}[/yellow]\n")
-        print("-" * 30)
+# --- BUCLE PRINCIPAL ---
+indice_anterior = -1
 
-        # --- MOSTRAR BLOQUE DE 3 LÍNEAS (Scroll) ---
+try:
+    while True:
+        # Sincronización del tiempo
+        tiempo_actual = (time.time() - tiempo_inicio) + tiempo_offset
         
-        # Línea Anterior (si existe)
-        if indice_actual > 0:
-            print(f"[grey37]{letra[indice_actual - 1]['texto']}[/grey37]")
-        else:
-            print("") # Espacio vacío si es la primera
+        indice_actual = 0
+        for i, elemento in enumerate(letra):
+            if tiempo_actual >= elemento["tiempo"]:
+                indice_actual = i
+            else:
+                break
 
-        # Línea Actual (Destacada)
-        print(f"[bold magenta]> {letra[indice_actual]['texto']} <[/bold magenta]")
+        # Solo disparamos la función cuando cambia el verso
+        if indice_actual != indice_anterior:
+            imprimir_centrado_con_efecto(letra[indice_actual]['texto'])
+            indice_anterior = indice_actual
 
-        # Línea Siguiente (si existe)
-        if indice_actual < len(letra) - 1:
-            print(f"[grey37]{letra[indice_actual + 1]['texto']}[/grey37]")
-        
-        print("-" * 30)
-        
-        indice_anterior = indice_actual
+        time.sleep(0.01)
 
-    time.sleep(0.05)
+except KeyboardInterrupt:
+    pygame.mixer.music.stop()
+    print("\n[bold red]Karaoke interrumpido.[/bold red]")
